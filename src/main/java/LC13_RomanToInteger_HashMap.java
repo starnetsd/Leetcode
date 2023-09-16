@@ -1,6 +1,9 @@
-public class LC13_RomanToInteger {
+import java.util.HashMap;
+import java.util.Map;
 
-    /*
+public class LC13_RomanToInteger_HashMap {
+
+        /*
         13. Roman to Integer
         https://leetcode.com/problems/roman-to-integer/
 
@@ -45,50 +48,34 @@ public class LC13_RomanToInteger {
         It is guaranteed that s is a valid roman numeral in the range [1, 3999].
      */
 
+    public int romanToInt(String s){
+        Map<Character, Integer> romansToIntMap = new HashMap<>();
+        romansToIntMap.put('I', 1);
+        romansToIntMap.put('V', 5);
+        romansToIntMap.put('X', 10);
+        romansToIntMap.put('L', 50);
+        romansToIntMap.put('C', 100);
+        romansToIntMap.put('D', 500);
+        romansToIntMap.put('M', 1000);
 
-    public int getInteger(char c) {
-        switch (c) {
-            case 'I':
-                return 1;
-            case 'V':
-                return 5;
-            case 'X':
-                return 10;
-            case 'L':
-                return 50;
-            case 'C':
-                return 100;
-            case 'D':
-                return 500;
-            case 'M':
-                return 1000;
-            default:
+        if (s == null || s.isEmpty() || s.length() > 15) {
+            return Integer.MAX_VALUE;
+        }
+
+        int num = romansToIntMap.get(s.charAt(s.length() -1));
+
+        for (int i = s.length() - 2; i >= 0; i--) {
+            if (!romansToIntMap.containsKey(s.charAt(i)) || !romansToIntMap.containsKey(s.charAt(i + 1))) {
                 return -1;
-        }
-    }
-
-    public int romanToInt(String s) {
-        int n = s.length();
-        int result = 0;
-        int current;
-        int next;
-        int i = 0;
-
-        while (i < n) {
-            if (i == n - 1) {
-                result += getInteger(s.charAt(i));
-                return result;
-            }
-            current = getInteger(s.charAt(i));
-            next = getInteger(s.charAt(i + 1));
-            if (current >= next) {
-                result += current;
-                i++;
+            } else if (romansToIntMap.get(s.charAt(i)) >= romansToIntMap.get(s.charAt(i + 1))) {
+                num += romansToIntMap.get(s.charAt(i));
             } else {
-                result += next - current;
-                i += 2;
+                num -= romansToIntMap.get(s.charAt(i));
             }
         }
-        return result;
+        if (num > 3999) {
+            return Integer.MIN_VALUE;
+        }
+        return num;
     }
 }
